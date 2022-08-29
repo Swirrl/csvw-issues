@@ -196,21 +196,20 @@ what `csv2rdf` does with our rows:
 The diagram below attempts to show what is occuring here; on the right
 we have the concrete CSV table representation, on the left is a
 representation of our annotated table. To simplify the model I've not
-actually shown it as triples, but have drawn it as a table, and have
-glossed over some details (for example csv2rdf standard mode won't
-actually emit the column annotations, for that you'd need to interpret
-the document again as JSON-LD).
+actually shown the annotated table as triples, but have drawn it as a
+table, and have glossed over some details (for example csv2rdf
+standard mode won't actually emit the column annotations, for that
+you'd need to interpret the document again as JSON-LD).
 
-The identifier of the annotated table at this stage is a blank node
-(represented here as `???`).
+The identifier of the annotated table at this stage is a blank node,
+represented in the diagram as `???`.
 
-Regardless the annotated table exists in our output as triples, and
-the row's are all connected to the `csvw:Table` via the `csvw:row`
-property. The astute will notice that our `csvw:Row`'s are all
-identified by blank nodes which link to the source row via the
+The annotated tables row's are all connected to the `csvw:Table` via
+the `csvw:row` property. The astute will notice that our `csvw:Row`'s
+are all identified by blank nodes which link to the source row via the
 `csvw:url` property and an
-[RFC7111](https://www.rfc-editor.org/rfc/rfc7111)
-csv fragment identifier.
+[RFC7111](https://www.rfc-editor.org/rfc/rfc7111) csv fragment
+identifier.
 
 Finally at the bottom of the diagram we show the desired RDF graph
 (represented as blobs and lines). Each `csvw:Row` links to the nodes
