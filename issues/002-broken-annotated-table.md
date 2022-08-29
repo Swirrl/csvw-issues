@@ -43,9 +43,16 @@ header row of metadata, and zero or more rows of data. In this
 interpretation all cells are strings and would require out of band
 knowledge on how to parse and interpret them properly.
 
-It looks like this:
+Assuming users are using a compatible parser, the table will look
+something like this:
 
 ![Input Table](./input-csv.png)
+
+I've purposefully not distinguished between the column headings and
+the data here, as that is knowledge CSVW gives us, which we'd
+otherwise have to recieve out of band. Strictly speaking if all we
+have is the above file, we can't even assume we know the dialect, and
+can't guarantee any tabular parsing at all.
 
 Next we have the JSON-LD metadata document:
 
@@ -107,7 +114,6 @@ slightly different but largely overlapping results:
 
 Under csv2rdf standard-mode the `csv2rdf` algorithm
 yields our "second table" of sorts, the "annotated table":
-
 
 ```turtle
     [
