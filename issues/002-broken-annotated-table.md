@@ -15,13 +15,13 @@ model](https://www.w3.org/TR/2015/REC-tabular-data-model-20151217/#dfn-annotated
 My proposition is that the standardised semantics of CSVW's annnotated
 table model are largely incompatible with linked data dereferencing.
 
-Due to the issues outlined here, I also claim that CSVW sadly yields
-and encourages unharmonised data outcomes. Outcomes which result in a
-proliferation of incomplete and inadequate representations of "the
-data", rather than the augmented common representation users expect.
+Due to the issues outlined here, I also claim that CSVW as it stands
+yields and encourages unharmonised data outcomes. Outcomes which
+result in a proliferation of incomplete and inadequate representations
+of "the data", rather than the augmented common representation users
+want.
 
-I believe many in the CSVW community will be surprised by this
-finding.
+I propose some suggested solutions to these issues below.
 
 This issue is related also to [issue #1: CSVW's weird evaluation
 semantics](./001-template-evaluation.md).
@@ -29,7 +29,7 @@ semantics](./001-template-evaluation.md).
 ## A proliferation of representations all different and incomplete
 
 Firstly lets look at some examples from the test suite to help explain
-this point. We'll use test011, firstly we have the simple CSV file:
+this point. We'll use [test011](https://github.com/w3c/csvw/tree/gh-pages/tests/test011), firstly we have the simple CSV file:
 
 ```csv
 GID,On Street,Species,Trim Cycle,Inventory Date
@@ -92,7 +92,7 @@ Next we have the JSON-LD metadata document:
 ```
 
 There are several interpretations of this document, which yield
-slightly different results:
+slightly different but largely overlapping results:
 
 1. csv2rdf standard-mode (and minimal-mode)
 2. A pure JSON-LD interpretation
