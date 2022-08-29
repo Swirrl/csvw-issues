@@ -29,7 +29,9 @@ semantics](./001-template-evaluation.md).
 ## A proliferation of representations all different and incomplete
 
 Firstly lets look at some examples from the test suite to help explain
-this point. We'll use [test011](https://github.com/w3c/csvw/tree/gh-pages/tests/test011), firstly we have the simple CSV file:
+this point. We'll use
+[test011](https://github.com/w3c/csvw/tree/gh-pages/tests/test011),
+firstly we have the simple CSV file:
 
 ```csv
 GID,On Street,Species,Trim Cycle,Inventory Date
@@ -112,6 +114,8 @@ slightly different but largely overlapping results:
    "annotated table". Such a process might provide a preview UI etc,
    or engage in a bespoke transformation etc.
 
+## csvw:Table's aren't really tables!
+
 Under csv2rdf standard-mode the `csv2rdf` algorithm
 yields our "second table" of sorts, the "annotated table":
 
@@ -151,7 +155,6 @@ model of a table.
 
 Before we try and align the model and representation, lets look at
 what `csv2rdf` does with our rows:
-
 
 ```turtle
     [
@@ -205,11 +208,7 @@ The identifier of the annotated table at this stage is a blank node,
 represented in the diagram as `???`.
 
 The annotated tables row's are all connected to the `csvw:Table` via
-the `csvw:row` property. The astute will notice that our `csvw:Row`'s
-are all identified by blank nodes which link to the source row via the
-`csvw:url` property and an
-[RFC7111](https://www.rfc-editor.org/rfc/rfc7111) csv fragment
-identifier.
+the `csvw:row` property.
 
 Finally at the bottom of the diagram we show the desired RDF graph
 (represented as blobs and lines). Each `csvw:Row` links to the nodes
@@ -218,16 +217,55 @@ we have are shown here:
 
 ![Three representations of the data](./three-representations.png)
 
-A few points to note about this output:
+## csvw:Row's aren't rows!
+
+This is in my mind one of the biggest conceptual problems with CSVW.
+If you look at the diagram above you'll realise that what we thought
+were rows in the annotated table aren't really rows in our table at
+all. They merely serve to connect:
+
+1. rows in the source CSV to the RDF outputs via both the
+`csv:url` with an [RFC7111](https://www.rfc-editor.org/rfc/rfc7111)
+csv fragment identifier.
+2. the generated RDF output to the source row.
+
+Whilst `csv2rdf` provides ways to access the `_row` and `_source` row
+in URI templates, the URI templates are only used to influence the
+construction of the output; crucially they're not used to facilitate
+description of the input; so there is no way within `csv2rdf` to
+assign your own `@id`'s to rows in the annotated table model.
+
+However the [csvw
+vocabulary](https://www.w3.org/ns/csvw#class-definitions) does
+describe them as what we might think of rows:
+
+> A Row represents a horizontal arrangement of cells within a Table.
+
+So the vocabulary and its usage in csv2rdf are somewhat conflated
+here.
+
+So surely CSVW lets us not only assign an `aboutUrl`, but a `rowUrl`
+or an identifier for the row in the annotated table?  Well no, it turns
+out if you read the part of the standard it's not possible:
+
+> 4.6.1: In standard mode only, establish a new blank node R which
+> represents the current row.
+
+Yes, in the annotated table, your `csvw:Row`'s can never have
+identifiers, they are always and only ever blank nodes. The specs do
+leverage [RFC7111](https://www.rfc-editor.org/rfc/rfc7111) which was
+largely developed to support CSVW.
+
+## Other small issues we can fix
 
 1. The annotated table is distinct from the CSV and has a different
-   identifier.
-2. The annotated table rows don't actually contain any data, they
-   merely join the csv row to the RDF output.
-3. The csv2rdf output does not include a representation of the columns
-   though you can obtain one by additionaly interpreting the metadata
-   document as JSON-LD.  Lets assume we have in the above diagram.
-4. The RDF output (from the URItemplates etc) is an arbitrary other
+   identifier (by default a blank node). This can be fixed by setting
+   an `@id` on the table to be the same as the `csvw:url`.
+2. The `csv2rdf` output does not include a representation of the
+   columns though you can obtain one by additionaly interpreting the
+   metadata document as JSON-LD. Lets assume we have in the above
+   diagram.
+3. The RDF output (from the URItemplates etc) is an arbitrary other
    representation entirely.
 
 It's worth noting that so far we've been working with just CSVW, but
@@ -244,189 +282,82 @@ have one dataset, which was augmented with unified metadata.
 "But it's JSON-LD!" I hear you cry, "you can assign `@id`s to align
 them!".  Lets try this and see what happens:
 
-## Aligning the representations and model
+# So what are the problems?
 
-Firstly lets add an `@id` to our table in the metadata document, and
-for simplicities sake we'll make that be the same as the `csvw:url`.
+## Representation independence
 
-```json
-"@id": "tree-ops.csv"
-```
+This might be a curious thing to ask for, given that "CSV on the Web"
+has CSV in the title, but ideally we want to be independent of
+specific data formats. RDF, linked data and the web architecture
+itself were all designed to support arbitrary representations, yet
+many parts of CSVW's design encourage representation centricity,
+making it hard to avoid.
 
-This appears to help alleviate things a little and gives us something
-like this:
+CSVW's annotated table model and vocabulary is largely representation
+independent and is intended to work with HTML tables for example.
+However many parts of spec, in particular around URI generation result
+in representation centricity.
 
-![Floating rows](./floating-rows.png)
+Similarly the specs always assume that a CSV on the web will be
+obtained by a GET request; and the specs do not assume a CSV
+representation can be obtained through content negotation on an
+abstract resource. For example the specs could have specified that
+user agents _SHOULD_ set a header of `Accept: text/csv`.
 
+If you're not careful however CSVW will tie you and your identifiers
+to concrete representations, rather than abstract resource
+identifiers. This poses a problem when we want to publish a dataset on
+the web. We're already invested in linked data, so ideally we want to
+publish a dataset with a single identifier, and have dereferencing
+that identifier not always give you the CSV, but have it give you an
+appropriate representation depending on content negotiation.
 
+## @base URI's are weird and broken
 
+This is discussed in the related issue of [template
+evaluation](./001-template-evaluation.md). Ultimately the work around
+here is to use absolute URIs everywhere, however that is highly
+undesirable, as it reduces the portability of the data, and makes it
+hard to untether it from a global context.
 
+In particular it also means that data developers cannot defer
+decisions about where data will eventually published to whomever does
+the publishing. Instead they must coordinate around URI's and ensuring
+their locations are agreed in advance.
 
+## A proliferation of unaligned representations without a coherent core model
 
+You can align the identifier for the abstract table resource with the
+location of the csv file, so that you are treating them logically as
+the same resource.
 
+However when you do this, not only are you baking the format into your
+identifiers, but you're not completely aligning the model.
 
+For example you cannot align `csv2rdf`'s `csvw:Row` objects with the
+table, because you cannot assign them `@id`'s which align with
+locations in the csv, instead you have to have a level of indirection.
 
+Many people have hoped for CSVW to be an on-ramp to linked data,
+giving people the benefits of linked data with more familiar tabular
+representations. However CSVW largely assumes RDF to be a product of
+CSV, rather than
 
+View's
 
-Unfortunately the specification doesn't include the actual
-metadata file which yields this result, however there are some
-[similar
-examples](https://github.com/w3c/csvw/blob/0f3a1fde0b8851692150f1862f56e0eead111560/tests/test101-metadata.json)
-in the CSVW test suite which we can massage into the right shape:
+We'd like to be
 
-```json
-{
-  "@context": "http://www.w3.org/ns/csvw",
-  "url": "countries.csv",
-  "tableSchema": {
-      "columns": [{
-        "name": "countryCode",
-        "titles": "countryCode",
-        "datatype": "string",
-        "propertyUrl": "http://www.geonames.org/ontology{#_name}"
-      }, {
-        "name": "latitude",
-        "titles": "latitude",
-        "datatype": "number"
-      }, {
-        "name": "longitude",
-        "titles": "longitude",
-        "datatype": "number"
-      }, {
-        "name": "name",
-        "titles": "name",
-        "datatype": "string"
-      }],
-      "aboutUrl": "{#countryCode}",
-      "propertyUrl": "http://schema.org/{_name}"
-  }
-}
-```
+## Identifiers
 
-When `csv2rdf` is run on a document like the above something like this
-will be the output of the transformation:
-
-```turtle
-@base <http://example.org/countries.csv> .
-
-<#AD>
-  <#countryCode> "AD" ;
-  <#latitude> "42.5" ;
-  <#longitude> "1.6" ;
-  <#name> "Andorra" .
-
-<#AE>
-  <#countryCode> "AE" ;
-  <#latitude> "23.4" ;
-  <#longitude> "53.8" ;
-  <#name> "United Arab Emirates" .
-
-<#AF>
-  <#countryCode> "AF" ;
-  <#latitude> "33.9" ;
-  <#longitude> "67.7" ;
-  <#name> "Afghanistan" .
-```
-
-NOTE that the output of this process is to create new identifers
-logically in the CSV document, but that these identifiers are not
-themselves the same as the identifiers for the CSV rows. For those we
-need to look at the representation of the annotated table model where
-we see this emitted (under standard mode):
-
-
-```turtle
-@base <http://example.org/countries.csv> .
-@prefix csvw: <http://www.w3.org/ns/csvw#> .
-@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
-
-_:d4f8e548-9601-4e41-aadb-09a8bce32625 a csvw:TableGroup ;
-  csvw:table [ a csvw:Table ;
-    csvw:url <http://example.org/countries.csv> ;
-    csvw:row [ a csvw:Row ;
-      csvw:rownum "1"^^xsd:integer ;
-      csvw:url <#row=2> ;
-      csvw:describes <#AD>
-    ], [ a csvw:Row ;
-      csvw:rownum "2"^^xsd:integer ;
-      csvw:url <#row=3> ;
-      csvw:describes <#AE>
-    ], [ a csvw:Row ;
-      csvw:rownum "3"^^xsd:integer ;
-      csvw:url <#row=4> ;
-      csvw:describes <#AF>
-    ]
-  ] .
-```
-
-
-CSVW does however allow you to assign your own `@id` to the logical
-table, e.g. we could add the line `@id` to the above json-ld, setting
-the `@id` to be the same as the `@base`:
-
-```
-{
- "@context": ["http://www.w3.org/ns/csvw", {"@base": "http://example.org/countries"}],
-  "@id": ""
-  ...
-}
-
-```
-
-This is the right starting point for our abstract annotated table. It
-would give us something like this:
-
-```
-<http://example.org/countries>
-    a csvw:Table ;
-    csvw:url <http://example.org/countries.csv> ;
-    csvw:row [ a csvw:Row ;
-      csvw:rownum "1"^^xsd:integer ;
-      csvw:url <#row=2> ;
-      csvw:describes <#AD>
-    ]
-```
-
-This literally says there is an "annotated table" at
-`<http://www.swirrl.com/csvw/example/countries>` which has a csv `url`
-at `countries.csv` and in that csv there exists a `csvw:Row`, though we
-don't know which row, which describes the resource found at
-`</countries.csv#AD>`.
-
-The data in the `csvw:Row` itself does then give us metadata which
-lets us (as humans) work out through deduction that it comes from
-`csvw:rownum 1` which can be found at `<#row=2>` in the csv file,
-however this information would in many cases naturally want to be part
-of the `csvw:Row` identifier and not expressed in such an unhelpful
-manner, which necessitates further post processing.
-
-So surely CSVW lets us not only assign an `aboutUrl`, but a `rowUrl`
-or an identifier for the row in the annotated table?  Well no, it turns
-out if you read the part of the standard it's not possible:
-
-> 4.6.1: In standard mode only, establish a new blank node R which
-> represents the current row.
-
-Yes, in the annotated table, your `csvw:Row`'s can never have
-identifiers, they are always and only ever blank nodes. The specs do
-leverage [RFC7111](https://www.rfc-editor.org/rfc/rfc7111) which was
-largely developed to support CSVW.
+When publishing linked data we want our identifers to also resolve to
+locations on the web.  So if I put
 
 
 
 
+# SCRATCH
 
-
-
-
-
-
-
-
-
-
-
-but as
-we'll see later whilst the csvw vocubulary provides a sufficient
-description of a table, the `csvw` specifications and in particular
-the `csv2rdf` algorithm yield poor results when describing tables.
+Part of the issue is that CSVW itself isn't very clear on what its
+model is. Is the annotated table model a `csvw:Table`, or is it the in
+memory representation you can build by simultaneously consulting a
+metadata document and a CSV file?
