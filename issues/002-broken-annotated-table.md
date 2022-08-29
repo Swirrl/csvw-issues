@@ -223,11 +223,12 @@ A few points to note about this output:
 1. The annotated table is distinct from the CSV and has a different
    identifier.
 2. The annotated table rows don't actually contain any data, they
-merely join the csv row to the RDF output.
+   merely join the csv row to the RDF output.
 3. The csv2rdf output does not include a representation of the columns
-   (though you can always obtain one by interpreting the metadata
-   document as JSON-LD)
-4. The RDF output is a different representation entirely
+   though you can obtain one by additionaly interpreting the metadata
+   document as JSON-LD.  Lets assume we have in the above diagram.
+4. The RDF output (from the URItemplates etc) is an arbitrary other
+   representation entirely.
 
 It's worth noting that so far we've been working with just CSVW, but
 in practice we also want to describe our statistical data as RDF Data
