@@ -43,6 +43,10 @@ header row of metadata, and zero or more rows of data. In this
 interpretation all cells are strings and would require out of band
 knowledge on how to parse and interpret them properly.
 
+It looks like this:
+
+![Input Table](./input-csv.png)
+
 Next we have the JSON-LD metadata document:
 
 ```json
@@ -204,12 +208,57 @@ csv fragment identifier.
 
 Finally at the bottom of the diagram we show the desired RDF graph
 (represented as blobs and lines). Each `csvw:Row` links to the nodes
-it constructed via a `csvw:describes` predicate:
+it constructed via a `csvw:describes` predicate. The 3 representations
+we have are shown here:
 
 ![Three representations of the data](./three-representations.png)
 
-Firstly in the annotated table model, the `csvw:Row`'s don't
-actually contain any data.
+A few points to note about this output:
+
+1. The annotated table is distinct from the CSV and has a different
+   identifier.
+2. The annotated table rows don't actually contain any data, they
+merely join the csv row to the RDF output.
+3. The csv2rdf output does not include a representation of the columns
+   (though you can always obtain one by interpreting the metadata
+   document as JSON-LD)
+4. The RDF output is a different representation entirely
+
+It's worth noting that so far we've been working with just CSVW, but
+in practice we also want to describe our statistical data as RDF Data
+cubes. If we're not careful these cubes would then be a fourth
+representation of the same data.
+
+Ideally we would have one abstract "linked data dataset", which
+benefitted from all of the annotations, extensions and representations
+we are using. We wouldn't have a CSV file, and an annotated table, and
+some RDF output with some provenance linked them, but instead would
+have one dataset, which was augmented with unified metadata.
+
+"But it's JSON-LD!" I hear you cry, "you can assign `@id`s to align
+them!".  Lets try this and see what happens:
+
+## Aligning the representations and model
+
+Firstly lets add an `@id` to our table in the metadata document, and
+for simplicities sake we'll make that be the same as the `csvw:url`.
+
+```json
+"@id": "tree-ops.csv"
+```
+
+This appears to help alleviate things a little and gives us something
+like this:
+
+![Floating rows](./floating-rows.png)
+
+
+
+
+
+
+
+
 
 
 
