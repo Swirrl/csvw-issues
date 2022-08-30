@@ -5,6 +5,41 @@ cases](https://www.w3.org/TR/2016/NOTE-csvw-ucr-20160225/#R-AnnotationAndSupplem
 was to provide annotations on tabular data, in particular data in the
 form of a CSV file.
 
+We believe annotations on tables are an important feature of CSVW
+which we want to surface to publishers and users alike. The reasoning
+here is that both publishers and consumers are familiar with tables,
+so tables and their components (e.g. columns, rows, cells) are a
+natural and familiar place to add extra metadata annotations.
+
+The table's structure therefore provides a familiar structure which
+users can arbitrarily extend. In practice these extensions mean
+annotating various locations within the table (subjects) with pairs of
+predicates and objects; and in this way CSVW provides a more familiar
+on ramp to the world of linked data.
+
+Similarly we'd like these tables (datasets) to actually be linked
+data; that is they should be identified by their locations on the web.
+Visiting a "table" would then be dereferencing the table into an
+appropriate representation; for example a HTML interface to the
+annotated table model, or a `text/csv` representation of the data,
+depending on [content negotiation](https://www.w3.org/TR/dwbp/#Conneg).
+
+As we will see, there are many impedance mismatches between CSVW and
+linked data, and in-spite of their shared origins and goals they are
+hard to align. Consequently it is hard to integrate these two
+technologies such that they are both mutually beneficial and aligned.
+
+## What we want to happen
+
+Before we look at the problems, we should first define what outcome we
+would like from integrating CSVW with linked data.
+
+![CSVW Preview](./linked-data-csvw.png)
+
+
+
+
+
 CSVW aims to do this by adding a metadata file, which describes a CSV
 file, and grants it a dialect, an optional schema, and arbitrary other
 annotations in a subset of JSON-LD. The metadata document is a JSON-LD
