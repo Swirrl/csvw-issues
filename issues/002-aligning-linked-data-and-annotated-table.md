@@ -29,32 +29,108 @@ linked data, and in-spite of their shared origins and goals they are
 hard to align. Consequently it is hard to integrate these two
 technologies such that they are both mutually beneficial and aligned.
 
-## What we want to happen
+# What we want to happen
 
 Before we look at the problems, we should first define what outcome we
 would like from integrating CSVW with linked data.
 
+Below is a prototype UI for a CSVW interface. It may not be apparent
+from looking at it, but this UI demonstrates some interesting
+properties that attempt to try and harmonise CSVW and linked data.
+
+Firstly we anticipate that the dataset would be identified by a format
+independent `@id`, that is the datasets URI would literally be the
+same as the CSV's `@id`, and that visiting it in a browser like below
+would return a HTML representation of the data:
+
 ![CSVW Preview](./linked-data-csvw.png)
 
+Logically for this to occur, the URI of the resource would be
+independent of the CSV file itself, and the `@id` would identify the
+annotated `csvw:Table`, which would be an abstraction over the CSVW.
 
+The URI `</data/life-expectancy>` would essentially then provide a
+uniform interface to the resource and the representation(s) people
+want. For example if you ask for `application/csvm+json` you would be
+directed to the metadata file, `text/csv` the CSV, whilst `text/html`
+or an RDF serialisation such as `application/n-triples` would combine
+the two documents to yield the expected representation.
 
+Similarly it would be extremely desirable for all of the URI's to
+align appropriately, such that dereferencing an observation by its
+`aboutUrl` would return an appropriate representation of it in
+context of the table:
 
+![Row dereferencing](./row-dereferencing.png)
 
-CSVW aims to do this by adding a metadata file, which describes a CSV
-file, and grants it a dialect, an optional schema, and arbitrary other
-annotations in a subset of JSON-LD. The metadata document is a JSON-LD
-derived format for annotating the CSV file, within what CSVW calls the
-[annotated table
-model](https://www.w3.org/TR/2015/REC-tabular-data-model-20151217/#dfn-annotated-table)
+The above feels highly intuitive, and brings the combined benefits of
+linked data and CSVW to more typical data users. However it's worth
+noting that to make this work, we need to unpick some subtle issues in
+the specification and clarify our terms of engagement such that this
+can occur.
 
-My proposition is that the standardised semantics of CSVW's annnotated
-table model are subtly incompatible with linked data dereferencing.
+In particular it's worth noting that there are substantial differences
+in CSVW between the RDFization of data and the representation of the
+source data in the CSV. In CSVW the RDF outputs of `csv2rdf` are not
+typically thought to be tabular, but belong to the world of graphs,
+rather than tables. However in the cases of CSVW we'd like to present
+the derived graph in terms of the table.
 
-Due to the issues outlined here, I also claim that CSVW as it stands
+This means that in this view `csvw:Column` definitions in the
+`csvw:TableSchema` are used as a lens through which we can view the
+projected RDF graph. Is a `csvw:Column` the same as an `rdf:Property`?
+No, at least not always, but they are in some cases so closely linked
+that for practical purposes it is worth treating them as highly
+related, and in the case of dataset specific properties they could for
+brevity share the same `@id` and be maintained in the same place.
+
+The UI could for example incorporate affordances for accessing
+metadata on the columns themselves:
+
+![Column metadata](./column-metadata.png)
+
+In particular exposing annotations on the `csvw:TableSchema` and
+`csvw:Column`s gives us structural locations for publishers and users
+to access knowledge in the DSD. For CSVW cubes a tableSchema could
+share the same `@id` as the cubes DSD, exploiting this would benefit
+maintainance and understanding, and minimise the need to develop whole
+new features to handle artificially distinct structures.
+
+I'd like to encourage the view that the same `csvw:TableSchema` is the
+most useful lens through which to view the input CSV, the output RDF,
+and arbitrary internal stages of processing (such as viewing
+validation errors as annotations on what is substantially the same
+table). Having publishers and users alike work with the same
+[homoiconic representation](https://en.wikipedia.org/wiki/Homoiconicity) is highly
+beneficial to understanding, and lets users leverage all
+representations simultaneously as extensions within the same model.
+
+In order to do this, and to use the `csvw:TableSchema` as a lens for
+viewing the RDF output; there is one small complication, which is that
+a csv row may itself yield multiple subjects (`aboutUrl`'s). This can
+be solved by `mapcat`/`flatMap`ing over the outputs to remove the
+layer of nesting that results. This may in some circumstances result
+in one input row becoming several output rows, and may increase the
+likelyhood that some columns containing null values.
+
+It's also worth noting that typically for statistical data cubes we
+would not expect Tidy data (essentially 3rd normal form) to have
+multiple subjects, as that would typically imply a level of
+denormalisation.
+
+# The problems aligning linked data and CSVW
+
+Unfortunately the above vision is awkward to achieve due to problems
+in CSVW's construction. The main claim here is that the standardised
+semantics of CSVW's annnotated table model are subtly incompatible and
+create a surprising amount of friction when married with the
+requirements for linked data dereferencing.
+
+Due to the issues discussed below, I also claim that CSVW as it stands
 yields and encourages unharmonised data outcomes. Outcomes which
 result in a proliferation of incomplete and inadequate representations
 of "the data", rather than the augmented common representation users
-want.
+expect.
 
 I propose some suggested solutions to these issues below.
 
@@ -417,22 +493,3 @@ Many people have hoped for CSVW to be an on-ramp to linked data,
 giving people the benefits of linked data with more familiar tabular
 representations. However CSVW largely assumes RDF to be a product of
 CSV, rather than
-
-View's
-
-We'd like to be
-
-## Identifiers
-
-When publishing linked data we want our identifers to also resolve to
-locations on the web.  So if I put
-
-
-
-
-# SCRATCH
-
-Part of the issue is that CSVW itself isn't very clear on what its
-model is. Is the annotated table model a `csvw:Table`, or is it the in
-memory representation you can build by simultaneously consulting a
-metadata document and a CSV file?
