@@ -1,4 +1,4 @@
-# Shattered dreams: CSVW's annotated table
+# Aligning Linked Data and the CSVW annotated table
 
 One of CSVW's [stated use
 cases](https://www.w3.org/TR/2016/NOTE-csvw-ucr-20160225/#R-AnnotationAndSupplementaryInfo)
@@ -13,7 +13,7 @@ derived format for annotating the CSV file, within what CSVW calls the
 model](https://www.w3.org/TR/2015/REC-tabular-data-model-20151217/#dfn-annotated-table)
 
 My proposition is that the standardised semantics of CSVW's annnotated
-table model are largely incompatible with linked data dereferencing.
+table model are subtly incompatible with linked data dereferencing.
 
 Due to the issues outlined here, I also claim that CSVW as it stands
 yields and encourages unharmonised data outcomes. Outcomes which
@@ -114,8 +114,6 @@ slightly different but largely overlapping results:
    "annotated table". Such a process might provide a preview UI etc,
    or engage in a bespoke transformation etc.
 
-## csvw:Table's aren't really tables!
-
 Under csv2rdf standard-mode the `csv2rdf` algorithm
 yields our "second table" of sorts, the "annotated table":
 
@@ -146,15 +144,46 @@ assumptions, we're forced to treat this as either a different table to
 that in the CSV, or as being in a heisenberg like state of
 uncertainity where it's potentially the same or different.
 
-One might say this is fine, the `csvw:Table` *is* really just a
-description of the table, whilst the csv file itself *is* the actual
-table. This distinction is essentially what you get by default,
-however as we'll see it's not really possible within the spec to align
-the table description with the representation, and present a unified
-model of a table.
+Users can always assign an `@id` and set the annotated table's
+identifer to be whatever they want. So, one obvious way to align these
+representations is to set it to be the same as the CSV file's
+location, it's `csvw:url`.
 
-Before we try and align the model and representation, lets look at
-what `csv2rdf` does with our rows:
+If we do this however we are baking the concrete representation into
+our identifier and not allowing for other representations of the
+table. For example it would be highly desirable for users pasting a
+CSVW backed dataset's URI into a web browser to receive a HTML
+interface representation of the dataset when visiting it, and this
+pattern prohibits this.
+
+## csvw:Table's aren't really tables!
+
+One might say it is fine for the CSV and the `csvw:Table` to have
+different identifiers because a `csvw:Table` *is* really just a
+description of the table, whilst the csv file itself *is* the actual
+table.
+
+Whilst this distinction between description and table is logical, it
+is not particularly helpful for us. The proliferation of identifiers
+leads to a proliferation of locations (web resources) and an
+artificial separation of concerns which does not benefit users.
+
+Additionally it prohibits many optimisations, for example it is
+significantly faster to materialise a HTML representation of a tidy
+table of observations if you can take them directly from the CSV file
+guided by the metadata document, than it is to atomise them into
+triples indexed in a triplestore, and try to reconstitute the input
+table from the triples via a SPARQL query.
+
+So the question then becomes, can we align the `csvw:Table`
+description with the actual table, such that we can treat them
+logically as one and the same thing?
+
+I believe you can do this by hand, but unfortunately not with the
+`csv2rdf` specification as it stands.
+
+Lets look at the next problem, and see what `csv2rdf` has done with
+our rows:
 
 ```turtle
     [
@@ -237,35 +266,48 @@ assign your own `@id`'s to rows in the annotated table model.
 
 However the [csvw
 vocabulary](https://www.w3.org/ns/csvw#class-definitions) does
-describe them as what we might think of rows:
+describe them as a generalisation of what we might think of rows:
 
 > A Row represents a horizontal arrangement of cells within a Table.
 
-So the vocabulary and its usage in csv2rdf are somewhat conflated
-here.
+We can quibble that this definition is really defining a subset of a
+Row, but it is sufficient for our purposes, as subsets contain
+themselves.
 
-So surely CSVW lets us not only assign an `aboutUrl`, but a `rowUrl`
-or an identifier for the row in the annotated table?  Well no, it turns
-out if you read the part of the standard it's not possible:
+So the vocabulary and its usage in csv2rdf are somewhat conflated
+here. One might say it's ok, a row in `csv2rdf` is a proxy to finding
+a row, and the generated resource; but structurally that is quite
+different to what the `csvw:Row` represents.
+
+So perhaps we can align the `@id` of each `csvw:row` with an RFC7111
+`#row` fragment identifier instead? That way at least dereferencing a
+`csvw:Row` would yield a representation of the row. The rows would
+conceptually have a tautological `?row csvw:url ?row` triple, but we
+could easily ignore that.
+
+Well unfortunately, no you can't do that, `csv2rdf` insists that
+`csvw:Row`'s are only blank nodes, and provides no affordances for their
+identifying them in any other way.
 
 > 4.6.1: In standard mode only, establish a new blank node R which
 > represents the current row.
 
-Yes, in the annotated table, your `csvw:Row`'s can never have
-identifiers, they are always and only ever blank nodes. The specs do
-leverage [RFC7111](https://www.rfc-editor.org/rfc/rfc7111) which was
-largely developed to support CSVW.
+Yes, in the annotated table, your `csvw:Row`'s can never have global
+identifiers, they are always and only ever blank nodes.
 
-## Other small issues we can fix
+You can align `aboutUrl` to `_row` or `_sourceRow` but not the
+connective `csvw:row` objects.
 
-1. The annotated table is distinct from the CSV and has a different
-   identifier (by default a blank node). This can be fixed by setting
-   an `@id` on the table to be the same as the `csvw:url`.
-2. The `csv2rdf` output does not include a representation of the
-   columns though you can obtain one by additionaly interpreting the
-   metadata document as JSON-LD. Lets assume we have in the above
-   diagram.
-3. The RDF output (from the URItemplates etc) is an arbitrary other
+## Column annotations are ommitted
+
+Oddly the `csv2rdf` output does not include a representation of the
+columns though you can obtain one by additionaly interpreting the
+metadata document as JSON-LD. In our diagrams above we assume we have
+done this.
+
+These columns are defined and declared within the metadata document.
+
+The RDF output (from the URItemplates etc) is an arbitrary other
    representation entirely.
 
 It's worth noting that so far we've been working with just CSVW, but
@@ -279,8 +321,6 @@ we are using. We wouldn't have a CSV file, and an annotated table, and
 some RDF output with some provenance linked them, but instead would
 have one dataset, which was augmented with unified metadata.
 
-"But it's JSON-LD!" I hear you cry, "you can assign `@id`s to align
-them!".  Lets try this and see what happens:
 
 # So what are the problems?
 
