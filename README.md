@@ -22,3 +22,11 @@ process.
 We want to work with the CSVW community to solve these issues, though
 I believe there are some fundamental problems with the standards, it
 is also my belief that they can be resolved.
+
+## scratch
+
+
+As we will see, there are many impedance mismatches between CSVW and
+linked data, and in-spite of their shared origins and goals they are
+hard to align. Consequently it is hard to integrate these two
+technologies such that they are both mutually beneficial and aligned.
