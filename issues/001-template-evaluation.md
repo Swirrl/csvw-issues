@@ -249,57 +249,93 @@ many annotations of the same CSV.
 
 ## If you want this just use fully qualified URI's in your templates!
 
-This is strange too and mixes up concerns.
+This is extremely awkward to do in practice. Hardcoding URI's
+prohibits portability, and forces people to have prior knowledge of
+what specific URL will be used at publication time.
 
+The final URL's are frequently managed by content management and
+publishing systems, and may not be known in advance. Where data is
+prepared in advance by a different team, that team may need to defer
+the decision of the final URL to the publishing team who may lack the
+expertise to correctly edit and test the changes are correct.
 
+Similarly this approach forces the simple task of coining identifiers
+to become an extremely error prone and unneccessarily beuraucratic and
+political process.
 
+If the identifiers are allowed to be relative, then data engineers can
+effectively defer these decisions to the publisher; whilst still
+allowing the data to work properly in a local context.
 
+# Solutions
 
+Unfortunately there are no good obvious solutions here.
 
-Now lets look at the data again to see what happened to our `#parent-node`
+## Solution 1: Change the base for resolution of templates
 
-Now lets look at the `propertyUrl`. In CSVW a propertyUrl is not
-actually a URI, but a [URI template](https://www.rfc-editor.org/rfc/rfc6570)
+This amounts to a small but important deviation from the CSVW
+standards. It essentially amounts to replacing a single noun in
+the specification.
 
+Where [tabular metadata spec says this](https://www.w3.org/TR/2015/REC-tabular-metadata-20151217/#uri-template-properties)
 
-So what is going on here? Well we're trying to align the identifier
-for our `csvw:Column` definition to that of the predicate we use in
-the resultant RDF. Granted some people may find the above a little
-unusual or distasteful; however it is in no way as weird or unusual as
-this issue. The fact is a `csvw:Column` needn't be disjoint from a
-predicate.
+> 3. resolving the resulting URL against the base URL of the table url if not null.
 
+If we replaced the phrase _table url_ with the word _metadata-document
+url_ this whole problem would disappear.
 
+In my opinion this would have been by far been the best solution. I
+should also add that this point was raised numerous times by at least
+four of the six named authors and chairs of the working group. All of
+whom seemed to think this was a bad idea, yet there is no documented
+decision on why the reverse decision (to use the _table url_) was
+made. For a comprehensive exposé of the working groups decision making
+here please see
+[w3c/csvw#888](https://github.com/w3c/csvw/issues/888).
 
+Unfortunately changing this would represent a breaking or divergent
+change in a documented standard. Changing the resolution under the
+guise of a new `csv2rdf` is unfortunately not sufficient, because the
+templates need to resolve to the same URI's in both the annotated
+table and in the RDFization, and the resolution is unfortunately
+specified in the core tabular metadata standard; not the csv2rdf
+standard.
 
+## Solution 2: Introduce new variables to the URItemplate context
 
-that is besides the point; a
-`csvw:Column` in CSVW's abstract table can be the same as a predicate
-if I want it be.
+Another solution would be to introduce new variables into the context
+of the URITemplates which would give you the ability to derive
+identifiers on a different base URI.  For example we could define:
 
+- `_base` to be the base URI of the metadata document (whether that is
+  set explicitly with `@base` or derived explicitly from the metadata
+  documents location).
+- `_tableid` to be the `@id` of the currently scoped `csvw:Table`, as
+  this may be a blank node, in those cases we would need to set it to
+  a `null` value.
 
+NOTE: there are different semantics between resolution in terms of a
+base and template expansion.
 
+For example URI resolution of `/blah` against the base
+`http://example.org/data/foo.json` would yield something like
+`http://example.org/blah` whilst the expansion of the template
+`{+_base}/blah` would yield something like
+`http://example.org/data/base`. This is consistent with template
+expansion, and we can get the desired effect by ensuring `_base` is
+calculated as essentially the parent path of the metadata document, or
+whatever was explicitly set as `@base`.
 
+One small thing to note is that documents using these extra variables
+are subtly incompatible with compliant processors. This is because
+syntactically valid URItemplates are not permitted to fail because of
+unbound variables in their context.
 
+For example a standards compliant template will interpret the template
+`{+ _base}#foo` as equivalent to `#foo` which will then be expanded in
+terms of the CSV file, e.g. `http://example.org/table.csv#foo` where
+as a processor with `_base` mapped to `http://swirrl.com/dataset`
+could yield something radically different like `http://swirrl.com/dataset#foo`
 
-
-
-; the algorithm for doing this is specified in
-[RFC3986](https://www.rfc-editor.org/rfc/rfc3986#section-5), but
-essentially it's an important way to support relative links.
-
-Relative links in software systems are very important, they mean you
-can easily and reliably reference collections of files and resources
-
-
-
-
-
-
-
-
-
-
-```turtle
-_:b0 csvw:url "https://gist.githubusercontent.com/RickMoynihan/044cf6e38da6a52acaad4d9597222f02/raw/63041dd6702252ddb7e0dab06120afbe343a262c/expansion.csv"^^<http://www.w3.org/2001/XMLSchema#anyURI> .
-```
+For this reason this is strictly speaking an incompatible change; but it
+is explicit and requires opt in.
