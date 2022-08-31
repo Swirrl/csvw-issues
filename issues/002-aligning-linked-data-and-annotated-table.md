@@ -118,9 +118,56 @@ would not expect Tidy data (essentially 3rd normal form) to have
 multiple subjects, as that would typically imply a level of
 denormalisation.
 
+## Clarifying the Annotated Table model
+
+Reading the specs people are often unclear about what exactly the
+annotated table is. It is frequently confused or seen as equivalent to
+the RDF, however in reality it is something different.
+
+When you closely read the specifications (principally the core
+[tabular data
+model](https://www.w3.org/TR/2015/REC-tabular-data-model-20151217/)
+specification) it is clear that the annotated table is essentially an
+[in-process
+representation](https://www.w3.org/TR/2015/REC-tabular-data-model-20151217/#dfn-annotated-table)
+of the processing. Essentially it is a specified JSON-like in memory
+data structure that results from the merger of the data with the
+processing instructions in the metadata document.
+
+As we have seen the annotated table is _not equivalent_ to the
+`csv2rdf` standard mode output, as the output there is not by default
+annotating much at all.
+
+It's worth noting that the annotated table model contains metadata
+such as the URI templates `aboutUrl`, `propertyUrl` and `valueUrl`
+even though this core specification does not directly use them. This
+was almost certainly done to ensure that all interpretations of the
+annotated table expand these templates in the same defined way. This
+does pose some problems as the evaluation of these [templates is
+"weird"](./001-template-evaluation.md)
+
+Another question; is what table does the annotated table actually
+represent? Is it annotating the CSV input, the RDF output or the
+processing of the CSV? The only clear answer to this question is that
+it is all of the above because the annotated table is procedurally
+defined by the algorithms in the specs and updated in place. Subsets
+of the schemas and metadata apply at different points, and may take on
+multiple roles or meanings. For example `csv2rdf` uses the URI
+templates to build triples, but the annotated table model uses them to
+help annotate cells, rows and columns depending on your perspective.
+
+It is largely this ambiguity which we hope to exploit in our proposed
+CSVW interfaces; and that we should adopt conventions that align our
+representations such that they are isomorphic across different
+contexts.
+
 # The problems aligning linked data and CSVW
 
-Unfortunately the above vision is awkward to achieve due to problems
+Our proposed interfaces aim to use the annotated table model as the
+most complete representation of CSVW, to drive many features and
+benefits.
+
+However the above vision is awkward to achieve due to problems
 in CSVW's construction. The main claim here is that the standardised
 semantics of CSVW's annnotated table model are subtly incompatible and
 create a surprising amount of friction when married with the
@@ -132,12 +179,10 @@ result in a proliferation of incomplete and inadequate representations
 of "the data", rather than the augmented common representation users
 expect.
 
-I propose some suggested solutions to these issues below.
-
 This issue is related also to [issue #1: CSVW's weird evaluation
 semantics](./001-template-evaluation.md).
 
-## A proliferation of representations all different and incomplete
+### A proliferation of representations all different and incomplete
 
 Firstly lets look at some examples from the test suite to help explain
 this point. We'll use
@@ -267,7 +312,7 @@ CSVW backed dataset's URI into a web browser to receive a HTML
 interface representation of the dataset when visiting it, and this
 pattern prohibits this.
 
-## csvw:Table's aren't really tables!
+### csvw:Table's aren't really tables!
 
 One might say it is fine for the CSV and the `csvw:Table` to have
 different identifiers because a `csvw:Table` *is* really just a
@@ -357,7 +402,7 @@ we have are shown here:
 
 ![Three representations of the data](./three-representations.png)
 
-## csvw:Row's aren't rows!
+### csvw:Row's aren't rows!
 
 This is in my mind one of the biggest conceptual problems with CSVW.
 If you look at the diagram above you'll realise that what we thought
@@ -409,7 +454,7 @@ identifiers, they are always and only ever blank nodes.
 You can align `aboutUrl` to `_row` or `_sourceRow` but not the
 connective `csvw:row` objects.
 
-## Column annotations are ommitted
+### Column annotations are ommitted
 
 Oddly the `csv2rdf` output does not include a representation of the
 columns though you can obtain one by additionaly interpreting the
@@ -419,7 +464,7 @@ done this.
 These columns are defined and declared within the metadata document.
 
 The RDF output (from the URItemplates etc) is an arbitrary other
-   representation entirely.
+representation entirely.
 
 It's worth noting that so far we've been working with just CSVW, but
 in practice we also want to describe our statistical data as RDF Data
@@ -431,9 +476,6 @@ benefitted from all of the annotations, extensions and representations
 we are using. We wouldn't have a CSV file, and an annotated table, and
 some RDF output with some provenance linked them, but instead would
 have one dataset, which was augmented with unified metadata.
-
-
-# So what are the problems?
 
 ## Representation independence
 
@@ -493,3 +535,8 @@ Many people have hoped for CSVW to be an on-ramp to linked data,
 giving people the benefits of linked data with more familiar tabular
 representations. However CSVW largely assumes RDF to be a product of
 CSV, rather than
+
+
+# Solutions
+
+TBD
