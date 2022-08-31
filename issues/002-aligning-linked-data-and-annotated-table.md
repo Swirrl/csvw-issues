@@ -43,7 +43,7 @@ independent `@id`, that is the datasets URI would literally be the
 same as the CSV's `@id`, and that visiting it in a browser like below
 would return a HTML representation of the data:
 
-![CSVW Preview](./linked-data-csvw.png)
+![CSVW Preview](../assets/linked-data-csvw.png)
 
 Logically for this to occur, the URI of the resource would be
 independent of the CSV file itself, and the `@id` would identify the
@@ -61,7 +61,7 @@ align appropriately, such that dereferencing an observation by its
 `aboutUrl` would return an appropriate representation of it in
 context of the table:
 
-![Row dereferencing](./row-dereferencing.png)
+![Row dereferencing](../assets/row-dereferencing.png)
 
 The above feels highly intuitive, and brings the combined benefits of
 linked data and CSVW to more typical data users. However it's worth
@@ -87,7 +87,7 @@ brevity share the same `@id` and be maintained in the same place.
 The UI could for example incorporate affordances for accessing
 metadata on the columns themselves:
 
-![Column metadata](./column-metadata.png)
+![Column metadata](../assets/column-metadata.png)
 
 In particular exposing annotations on the `csvw:TableSchema` and
 `csvw:Column`s gives us structural locations for publishers and users
@@ -204,7 +204,7 @@ knowledge on how to parse and interpret them properly.
 Assuming users are using a compatible parser, the table will look
 something like this:
 
-![Input Table](./input-csv.png)
+![Input Table](../assets/input-csv.png)
 
 I've purposefully not distinguished between the column headings and
 the data here, as that is knowledge CSVW gives us, which we'd
@@ -400,7 +400,7 @@ Finally at the bottom of the diagram we show the desired RDF graph
 it constructed via a `csvw:describes` predicate. The 3 representations
 we have are shown here:
 
-![Three representations of the data](./three-representations.png)
+![Three representations of the data](../assets/three-representations.png)
 
 ### csvw:Row's aren't rows!
 
