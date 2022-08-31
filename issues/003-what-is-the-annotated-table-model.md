@@ -14,7 +14,7 @@ of the processing. Essentially it is a specified JSON-like in memory
 data structure that results from the merger of the data with the
 processing instructions in the metadata document.
 
-[As we have seen](./002-aligning-linked-data-and-annotated-table.md)
+[As we have seen](./001-aligning-linked-data-and-annotated-table.md)
 the annotated table is _not equivalent_ to the `csv2rdf` standard mode
 output, as the output there is not by default annotating much at all.
 
@@ -24,7 +24,7 @@ even though this core specification does not directly use them. This
 was almost certainly done to ensure that all interpretations of the
 annotated table expand these templates in the same defined way. This
 does pose some problems as the evaluation of these [templates is
-"weird"](./001-template-evaluation.md)
+"weird"](./002-template-evaluation.md)
 
 Another question; is what table does the annotated table actually
 represent? Is it annotating the CSV input, the RDF output or the
