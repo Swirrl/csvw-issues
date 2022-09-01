@@ -1,6 +1,6 @@
 # An aligned vision for CSVW and Linked Data
 
-NOTE you may want to read: ["What is the annotated table model?"](./issues/003-what-is-the-annotated-table-model.md) first.
+NOTE you may want to read: ["What is the annotated table model?"](../notes/001-what-is-the-annotated-table-model.md) first.
 
 One of CSVW's [stated use
 cases](https://www.w3.org/TR/2016/NOTE-csvw-ucr-20160225/#R-AnnotationAndSupplementaryInfo)

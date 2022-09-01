@@ -1,7 +1,7 @@
 # The problems aligning linked data and CSVW
 
 Our proposed interfaces aim to use [the annotated table
-model](./003-what-is-the-annotated-table-model.md) as the most
+model](../notes/001-what-is-the-annotated-table-model.md) as the most
 complete representation of CSVW, to drive many features and benefits.
 
 However [the vision](../csvw-vision.md) is awkward to achieve due to

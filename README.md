@@ -17,7 +17,7 @@ through the standardisation process.
 
 First read:
 
-- [What is the annotated table model?](./issues/003-what-is-the-annotated-table-model.md) to clear up some misconceptions on this topic.
+- [What is the annotated table model?](./notes/001-what-is-the-annotated-table-model.md) to clear up some misconceptions on this topic.
 - [A vision for CSVW](./csvw-vision.md) for context and background on
   what we hope to achieve.
 
