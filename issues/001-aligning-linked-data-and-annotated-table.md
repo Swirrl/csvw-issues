@@ -1,14 +1,14 @@
 # The problems aligning linked data and CSVW
 
-Our proposed interfaces aim to use the annotated table model as the
-most complete representation of CSVW, to drive many features and
-benefits.
+Our proposed interfaces aim to use [the annotated table
+model](./003-what-is-the-annotated-table-model.md) as the most
+complete representation of CSVW, to drive many features and benefits.
 
-However the above vision is awkward to achieve due to problems
-in CSVW's construction. The main claim here is that the standardised
-semantics of CSVW's annnotated table model are subtly incompatible and
-create a surprising amount of friction when married with the
-requirements for linked data dereferencing.
+However [the vision](../csvw-vision.md) is awkward to achieve due to
+problems in CSVW's construction. The main claim here is that the
+standardised semantics of CSVW's annnotated table model are subtly
+incompatible and create a surprising amount of friction when married
+with the requirements for linked data dereferencing.
 
 Due to the issues discussed below, I also claim that CSVW as it stands
 yields and encourages unharmonised data outcomes. Outcomes which
