@@ -14,17 +14,21 @@ of the processing. Essentially it is a specified JSON-like in memory
 data structure that results from the merger of the data with the
 processing instructions in the metadata document.
 
-[As we have seen](./001-aligning-linked-data-and-annotated-table.md)
-the annotated table is _not equivalent_ to the `csv2rdf` standard mode
-output, as the output there is not by default annotating much at all.
+[As we discuss in aligning CSVW and linked
+data](./001-aligning-linked-data-and-annotated-table.md) the annotated
+table is _not equivalent_ to the `csv2rdf` standard mode output, as
+the output there are not annotations over the input CSV, but new RDF
+resources. The `csvw:Table` that is emmitted is also not suited to
+annotation (the rows can only be blank nodes) and is closer to
+describing provenance than the input or output.
 
 It's worth noting that the annotated table model contains metadata
 such as the URI templates `aboutUrl`, `propertyUrl` and `valueUrl`
-even though this core specification does not directly use them. This
-was almost certainly done to ensure that all interpretations of the
-annotated table expand these templates in the same defined way. This
-does pose some problems as the evaluation of these [templates is
-"weird"](./002-template-evaluation.md)
+even though the core (tabular metadata model) specification does not
+directly use them. This was almost certainly done to ensure that all
+interpretations of the annotated table expand these templates in the
+same defined way. This does pose some problems as the evaluation of
+these [templates is "weird"](./002-template-evaluation.md)
 
 Another question; is what table does the annotated table actually
 represent? Is it annotating the CSV input, the RDF output or the
@@ -37,6 +41,11 @@ templates to build triples, but the annotated table model uses them to
 help annotate cells, rows and columns depending on your perspective.
 
 It is largely this ambiguity which we hope to exploit in our proposed
-CSVW interfaces; and that we should adopt conventions that align our
-representations such that they are isomorphic across different
-contexts.
+CSVW user interfaces; and that we should adopt conventions that align
+our representations such that they are isomorphic across different
+contexts. For example using substantially the same table to represent
+the csv input, the RDF output and the phases in between with
+affordances like checkboxes to toggle various features of the table on
+or off:
+
+![Checkboxes](../assets/csvwui-checkboxes.png)
