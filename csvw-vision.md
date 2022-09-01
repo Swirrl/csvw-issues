@@ -1,5 +1,7 @@
 # Aligning Linked Data and the CSVW annotated table
 
+NOTE you may want to read: ["What is the annotated table model?"](./issues/003-what-is-the-annotated-table-model.md) first.
+
 One of CSVW's [stated use
 cases](https://www.w3.org/TR/2016/NOTE-csvw-ucr-20160225/#R-AnnotationAndSupplementaryInfo)
 was to provide annotations on tabular data, in particular data in the
