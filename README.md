@@ -9,8 +9,8 @@ much to support a [vision for CSVW as outlined here](./csvw-vision.md).
 I hope many of these issues can be further clarified, and I can be
 corrected on a misinterpretation of the specifications. However I
 believe these issues are fundamental issues with the specifications
-deserving discussion, and hopefully resolutions or appropriate work
-arounds.
+(or what we expect from them) and deserving of discussion. Hopefully
+we can find resolutions or appropriate work arounds.
 
 It is easy to read the standards, or to look at some metadata document
 examples and believe you understand them and know how they work.
