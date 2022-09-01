@@ -1,4 +1,4 @@
-# What is the Annotated Table Model
+# What is the Annotated Table Model?
 
 Reading the specs people are often unclear about what exactly the
 annotated table is. It is frequently confused or seen as equivalent to
