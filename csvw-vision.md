@@ -1,4 +1,4 @@
-# Aligning Linked Data and the CSVW annotated table
+# An aligned vision for CSVW and Linked Data
 
 NOTE you may want to read: ["What is the annotated table model?"](./issues/003-what-is-the-annotated-table-model.md) first.
 
@@ -13,11 +13,11 @@ here is that both publishers and consumers are familiar with tables,
 so tables and their components (e.g. columns, rows, cells) are a
 natural and familiar place to add extra metadata annotations.
 
-The table's structure therefore provides a familiar structure which
-users can arbitrarily extend. In practice these extensions mean
-annotating various locations within the table (subjects) with pairs of
-predicates and objects; and in this way CSVW provides a more familiar
-on ramp to the world of linked data.
+We believe the components of a table provide a familiar structure
+which users can arbitrarily extend and annotate. In practice these
+extensions mean annotating various locations within the table
+(subjects) with pairs of predicates and objects; and in this way CSVW
+provides a more familiar on ramp to the world of linked data.
 
 Similarly we'd like these tables (datasets) to actually be linked
 data; that is they should be identified by their locations on the web.
@@ -25,6 +25,14 @@ Visiting a "table" would then be dereferencing the table into an
 appropriate representation; for example a HTML interface to the
 annotated table model, or a `text/csv` representation of the data,
 depending on [content negotiation](https://www.w3.org/TR/dwbp/#Conneg).
+
+In this model, there would be one table with many representations, and
+those representations would be isomorphic with each other. For example
+a row in the csv, would be the same row in the annotated table model,
+and that row in the csv would substantially contain the same
+observation in the RDF cube. Representations would substantially be
+different perspectives on the same thing, and not represent different
+things entirely.
 
 # What we want to happen
 
