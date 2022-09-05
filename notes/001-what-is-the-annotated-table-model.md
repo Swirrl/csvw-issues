@@ -15,7 +15,7 @@ data structure that results from the merger of the data with the
 processing instructions in the metadata document.
 
 [As we discuss in aligning CSVW and linked
-data](./001-aligning-linked-data-and-annotated-table.md) the annotated
+data](../issues/001-aligning-linked-data-and-annotated-table.md) the annotated
 table is _not equivalent_ to the `csv2rdf` standard mode output, as
 the output there are not annotations over the input CSV, but new RDF
 resources. The `csvw:Table` that is emmitted is also not suited to
@@ -28,7 +28,7 @@ even though the core (tabular metadata model) specification does not
 directly use them. This was almost certainly done to ensure that all
 interpretations of the annotated table expand these templates in the
 same defined way. This does pose some problems as the evaluation of
-these [templates is "weird"](./002-template-evaluation.md)
+these [templates is "weird"](../issues/002-template-evaluation.md)
 
 Another question; is what table does the annotated table actually
 represent? Is it annotating the CSV input, the RDF output or the
