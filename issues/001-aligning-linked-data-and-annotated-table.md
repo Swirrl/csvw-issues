@@ -16,8 +16,8 @@ result in a proliferation of incomplete and inadequate representations
 of "the data", rather than the augmented common representation users
 expect.
 
-This issue is related also to [issue #1: CSVW's weird evaluation
-semantics](./001-template-evaluation.md).
+This issue is related also to [issue #2: CSVW's weird evaluation
+semantics](./002-template-evaluation.md).
 
 ### A proliferation of representations all different and incomplete
 
