@@ -345,7 +345,7 @@ appropriate representation depending on content negotiation.
 ## @base URI's are weird and broken
 
 This is discussed in the related issue of [template
-evaluation](./001-template-evaluation.md). Ultimately the work around
+evaluation](./002-template-evaluation.md). Ultimately the work around
 here is to use absolute URIs everywhere, however that is highly
 undesirable, as it reduces the portability of the data, and makes it
 hard to untether it from a global context.
