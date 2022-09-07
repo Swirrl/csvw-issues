@@ -19,7 +19,7 @@ expect.
 This issue is related also to [issue #2: CSVW's weird evaluation
 semantics](./002-template-evaluation.md).
 
-### A proliferation of representations all different and incomplete
+## A proliferation of representations all different and incomplete
 
 Firstly lets look at some examples from the test suite to help explain
 this point. We'll use
@@ -149,7 +149,7 @@ CSVW backed dataset's URI into a web browser to receive a HTML
 interface representation of the dataset when visiting it, and this
 pattern prohibits this.
 
-### csvw:Table's aren't really tables!
+## csvw:Table's aren't really tables!
 
 One might say it is fine for the CSV and the `csvw:Table` to have
 different identifiers because a `csvw:Table` *is* really just a
@@ -239,7 +239,7 @@ we have are shown here:
 
 ![Three representations of the data](../assets/three-representations.png)
 
-### csvw:Row's aren't rows!
+## csvw:Row's aren't rows!
 
 This is in my mind one of the biggest conceptual problems with CSVW.
 If you look at the diagram above you'll realise that what we thought
@@ -292,7 +292,7 @@ can't give them an `@id` you can't annotate them.
 You can align `aboutUrl` to `_row` or `_sourceRow` but not the
 connective `csvw:row` objects.
 
-### Column annotations are ommitted
+## Column annotations are ommitted
 
 Oddly the `csv2rdf` output does not include a representation of the
 columns though you can obtain one by additionaly interpreting the
@@ -356,6 +356,92 @@ decisions about where data will eventually published to whomever does
 the publishing. Instead they must coordinate around URI's and ensuring
 their locations are agreed in advance.
 
-# Solutions
+# A suggested solution
 
-TBD
+There are a variety of possible solutions here. And I'll not describe
+any too deeply here, as there may be other approaches too. Instead
+I'll just hint towards a set of changes that I believe would go
+together to solving the problems as outlined.
+
+The main goal here is to achieve a single logical table, "the dataset"
+and for all the identifiers to work with linked data dereferencing. I
+assume some small deviations from the standard are permitted partly
+because I can't think of any other solution which meets my stated
+requirements.
+
+## Step 1: Coin an abstract annotated table identifer
+
+We want our dataset in all its guises to be format independent and
+based in a location we control. We also want to set the base to the
+location of "the dataset", so we can coin relative identifiers to
+this. Setting `@id` to the empty string should give us an `@id` of
+`http://example.org/data/tree-ops` for the dataset, our annotated
+table:
+
+```json
+{
+  "@context": ["http://www.w3.org/ns/csvw", {"@language": "en",
+                                             "base": "http://example.org/data/tree-ops"}],
+  "@id": "",
+  # "url": "tree-ops.csv",
+  # ...
+}
+```
+
+We assume also that we fix the weird base URI for [template evaluation
+with solution
+1](./002-template-evaluation.md#solution-1-change-the-base-for-resolution-of-templates).
+This means that any template URI's are expanded relative to
+`http://example.org/data/tree-ops`.
+
+## Step 2: Define a new csv2rdf mode
+
+This mode does the following:
+
+1. Uses the base URI semantics [we want](./002-template-evaluation.md#solution-1-change-the-base-for-resolution-of-templates).
+2. Generates [RFC7111](https://www.rfc-editor.org/rfc/rfc7111)
+   identifiers for `csvw:Row`'s and does so in terms of the `@id`.
+   i.e. http://example.org/data/tree-ops#row-1. These now derefence to
+   the metadata document. I think these should probably be offsets
+   into the CSV (i.e. `_sourceRow` not `_row`) so not correspond to
+   logical rows in the annotated table. This is so clients using only
+   the CSV can dereference them properly. In terms of the annotated
+   table model these are just used as opaque identifiers; but they are
+   now unambiguously refrencable for annotation. NOTE we may probably
+   won't RDFize these triples, but the UI can still dereference them
+   as if they existed.
+3. As implied in 1; `aboutUrl` templates will expand in terms of the
+   `base`, and thus can dereference to resources within the table. In
+   the tabular HTML interface these may highlight the row(s) which
+   yielded that subject. We may also use heuristics (e.g. the presence
+   of only one `aboutUrl` would imply tidy data) and allow us to
+   assume there are no complex overlapping cases.
+4. Emit column annotations such that the annotations exist as RDF.
+   This is highly useful as the column annotations are a logical place
+   for users to provide cube and other arbitrary annotations.
+5. Build the HTML UI such that it works with `aboutUrl`'s that
+   dereference into the table itself; so we can use the table as the
+   means by which users represent this portion of the graph.
+
+I believe the above changes would resolve the bulk of the issues
+discussed, and would hugely assist in not only aligning
+representations; but would also help leverage the tabular structure of
+the CSV to solve important other problems; most notably performance
+issues in tabular processing.
+
+## Additional problems & solutions
+
+### CSVW assumes there's only ever one representation (CSV)
+
+The CSVW standards do not when requesting a CSV file even suggest that
+clients _should_ do the sensible thing and set an `Accept: text/csv`
+HTTP header. This is problematic for us because we want to support a
+model where the same identifier has multiple representations.
+
+We can avoid this problem by sending the `text/csv` representation to
+clients that do not set an Accept header.
+
+i.e. we can send `text/csv` as the default representation when there
+is no accept header. This shouldn't affect users visiting the content
+in their browser as all browsers will send `Accept: text/html` with a
+high priority (`q` value).
