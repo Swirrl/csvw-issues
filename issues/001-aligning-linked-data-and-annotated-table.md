@@ -286,7 +286,8 @@ identifying them in any other way.
 > represents the current row.
 
 Yes, in the annotated table, your `csvw:Row`'s can never have global
-identifiers, they are always and only ever blank nodes.
+identifiers, they are always and only ever blank nodes, and if you
+can't give them an `@id` you can't annotate them.
 
 You can align `aboutUrl` to `_row` or `_sourceRow` but not the
 connective `csvw:row` objects.
@@ -354,25 +355,6 @@ In particular it also means that data developers cannot defer
 decisions about where data will eventually published to whomever does
 the publishing. Instead they must coordinate around URI's and ensuring
 their locations are agreed in advance.
-
-## A proliferation of unaligned representations without a coherent core model
-
-You can align the identifier for the abstract table resource with the
-location of the csv file, so that you are treating them logically as
-the same resource.
-
-However when you do this, not only are you baking the format into your
-identifiers, but you're not completely aligning the model.
-
-For example you cannot align `csv2rdf`'s `csvw:Row` objects with the
-table, because you cannot assign them `@id`'s which align with
-locations in the csv, instead you have to have a level of indirection.
-
-Many people have hoped for CSVW to be an on-ramp to linked data,
-giving people the benefits of linked data with more familiar tabular
-representations. However CSVW largely assumes RDF to be a product of
-CSV, rather than
-
 
 # Solutions
 
