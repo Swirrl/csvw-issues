@@ -356,6 +356,21 @@ decisions about where data will eventually published to whomever does
 the publishing. Instead they must coordinate around URI's and ensuring
 their locations are agreed in advance.
 
+## CSVW assumes there's only ever one representation (CSV)
+
+The CSVW standards do not when requesting a CSV file even suggest that
+clients _should_ do the sensible thing and set an `Accept: text/csv`
+HTTP header. This is problematic for us because we want to support a
+model where the same identifier has multiple representations.
+
+We can avoid this problem by sending the `text/csv` representation to
+clients that do not set an Accept header.
+
+i.e. we can send `text/csv` as the default representation when there
+is no accept header. This shouldn't affect users visiting the content
+in their browser as all browsers will send `Accept: text/html` with a
+high priority (`q` value).
+
 # A suggested solution
 
 There are a variety of possible solutions here. And I'll not describe
@@ -428,20 +443,3 @@ discussed, and would hugely assist in not only aligning
 representations; but would also help leverage the tabular structure of
 the CSV to solve important other problems; most notably performance
 issues in tabular processing.
-
-## Additional problems & solutions
-
-### CSVW assumes there's only ever one representation (CSV)
-
-The CSVW standards do not when requesting a CSV file even suggest that
-clients _should_ do the sensible thing and set an `Accept: text/csv`
-HTTP header. This is problematic for us because we want to support a
-model where the same identifier has multiple representations.
-
-We can avoid this problem by sending the `text/csv` representation to
-clients that do not set an Accept header.
-
-i.e. we can send `text/csv` as the default representation when there
-is no accept header. This shouldn't affect users visiting the content
-in their browser as all browsers will send `Accept: text/html` with a
-high priority (`q` value).
