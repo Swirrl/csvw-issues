@@ -36,7 +36,9 @@ and here is an observation within that dataset dereferencing too:
 http://deref.netlify.app/data/life-expectancy/observations/W06000015/2005-01-01T00%3A00%3A00%2FP3Y/Female
 
 The observant will note that the metadata in the prototype sets a base
-elsewhere and the URI's are slightly different.
+elsewhere and the URI's are slightly different to what is described here.
+
+There are other issues too; when in doubt assume it worked like as described here!
 
 ## Explanation of Ross's original example
 
