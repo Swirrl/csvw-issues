@@ -113,8 +113,18 @@ yields our "second table" of sorts, the "annotated table":
 ```turtle
     [
       a csvw:Table;
+      dc:title "Tree Operations"@en;
+      dcat:keyword "tree"@en,
+        "street"@en,
+        "maintenance"@en;
+      dc:license <http://opendefinition.org/licenses/cc-by/>;
+      dc:modified "2010-12-31"^^xsd:date;
+      dc:publisher [
+        schema:name "Example Municipality"@en;
+        schema:url <http://example.org>
+      ];
       # ... rows ...
-      csvw:url <test010.csv>
+      csvw:url <tree-ops.csv>
     ]
 ```
 
@@ -176,46 +186,21 @@ I believe you can do this by hand, but unfortunately not with the
 `csv2rdf` specification as it stands.
 
 Lets look at the next problem, and see what `csv2rdf` has done with
-our rows:
+[our rows](https://github.com/w3c/csvw/blob/0f3a1fde0b8851692150f1862f56e0eead111560/tests/test011/result.ttl#L21-L48):
 
 ```turtle
-    [
-      a csvw:Table;
       csvw:row [
         a csvw:Row;
-        csvw:describes [
-          :country "AD";
-          :name "Andorra"
-        ];
+        csvw:describes :gid-1;
         csvw:rownum 1;
-        csvw:url <test010.csv#row=2>
+        csvw:url <tree-ops.csv#row=2>
       ],  [
         a csvw:Row;
-        csvw:describes [
-          :country "AF";
-          :name "Afghanistan"
-        ];
+        csvw:describes :gid-2;
         csvw:rownum 2;
-        csvw:url <test010.csv#row=3>
-      ],  [
-        a csvw:Row;
-        csvw:describes [
-          :country "AI";
-          :name "Anguilla"
-        ];
-        csvw:rownum 3;
-        csvw:url <test010.csv#row=4>
-      ],  [
-        a csvw:Row;
-        csvw:describes [
-          :country "AL";
-          :name "Albania"
-        ];
-        csvw:rownum 4;
-        csvw:url <test010.csv#row=5>
+        csvw:url <tree-ops.csv#row=3>
       ];
-      csvw:url <test010.csv>
-    ]
+      csvw:url <tree-ops.csv>
 ```
 
 The diagram below attempts to show what is occuring here; on the right
