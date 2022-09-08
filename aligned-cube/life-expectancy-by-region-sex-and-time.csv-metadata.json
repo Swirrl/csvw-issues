@@ -1,0 +1,97 @@
+{
+ "@context": ["http://www.w3.org/ns/csvw", {"@language": "en",
+                                            "@base": "http://data.gov.uk/dataset/life-expectancy-by-region-sex-and-time"
+                                            }],
+ "@id": "",
+ "url": "life-expectancy-by-region-sex-and-time.csv",
+ "dcterms:title": "Life expectancy by local authority and sex",
+ "rdfs:comment": "Life expectancy by local authority and sex as a CSVW data cube",
+ "dcat:spatial": { "@id": "http://statistics.data.gov.uk/id/statistical-geography/W92000004" },
+ "dcat:temporal": { "@id": "http://reference.data.gov.uk/id/gregorian-interval/2004-01-01T00:00:00/P5Y" },
+ "dcterms:license": { "@id": "https://www.nationalarchives.gov.uk/doc/open-government-licence/version/3/" },
+ "dcterms:publisher": { "@id": "https://www.gov.uk/government/organisations/office-for-national-statistics" },
+ "dcat:mediaType": { "@id": "https://www.w3.org/ns/iana/media-types/text/csv#Resource" },
+
+ "qb:structure": {"@id": "#datacube/structure"},
+
+ "tableSchema": {"@id": "#datacube/structure",
+
+                 "columns": [
+                             {
+                              "@id": "#component/area",
+                              "name": "area",
+                              "titles": "area",
+                              "datatype": "string",
+                              "rdfs:label": "Area",
+                              "rdfs:comment": "The area of an observation.",
+                              "propertyUrl": "sdmx:refArea",
+                              "valueUrl": "http://statistics.data.gov.uk/id/statistical-geography/{area}"
+
+                              "qb:dimension": { "@id": "sdmx:refArea",
+                                                "rdfs:label": "Area"
+                                                }
+                              },
+                             {
+                              "@id": "#component/period",
+                              "qb:dimension": {
+                                               "@id": "sdmx:refPeriod",
+                                               "rdfs:label": "Period"
+                                               }
+                              "name": "period",
+                              "titles": "period",
+                              "datatype": "string",
+                              "rdfs:label": "Period",
+                              "rdfs:comment": "The period of an observation.",
+                              "propertyUrl": "sdmx:refPeriod",
+                              "valueUrl": "http://reference.data.gov.uk/id/gregorian-interval/{+period}"
+                              },
+                             {
+                              "@id": "#component/sex",
+
+                              "qb:dimension": {
+                                               "@id": "#dimension/sex",
+                                               "rdfs:label": "Sex"
+                                               }
+                              "name": "sex",
+                              "titles": "sex",
+                              "datatype": "string",
+                              "rdfs:label": "Sex",
+                              "rdfs:comment": "Biological sex of observed individuals.",
+                              "propertyUrl": "#dimension/sex",
+                              "valueUrl": "http://data.gov.uk/dataset/life-expectancy-by-region-sex-and-time/codelist/sex/code/{sex}"
+                              },
+                             {
+                              "@id": "#component/life-expectancy",
+
+                              "qb:measure": {
+                                             "@id": "#dimension/life-expectancy",
+                                             "@type": "qb:MeasureProperty",
+                                             "rdfs:label": "Average life expectancy",
+                                             "rdfs:comment": "Mean life expectancy of observed individuals."
+                                             }
+                              "name": "life_expectancy",
+                              "titles": "life_expectancy",
+                              "datatype": "decimal",
+                              "rdfs:label": "Average life expectancy",
+                              "rdfs:comment": "Mean life expectancy of observed individuals.",
+                              "propertyUrl": "#measure/life-expectancy"
+                              },
+                             {
+                              "virtual": true,
+                              "propertyUrl": "rdf:type",
+                              "valueUrl": "qb:Observation"
+                              },
+                             {
+                              "virtual": true,
+                              "propertyUrl": "qb:dataSet",
+                              "valueUrl": "#"
+                              }
+                             ],
+                 "qb:component": [
+                                  {"@id": "#component/area"},
+                                  {"@id": "#component/period"},
+                                  {"@id": "#component/sex"},
+                                  {"@id": "#component/life-expectancy"}
+                                  ]
+                 }
+ }
