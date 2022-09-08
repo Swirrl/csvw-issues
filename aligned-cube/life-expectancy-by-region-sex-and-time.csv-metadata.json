@@ -15,7 +15,6 @@
  "qb:structure": {"@id": "#datacube/structure"},
 
  "tableSchema": {"@id": "#datacube/structure",
-
                  "columns": [
                              {
                               "@id": "#component/area",
