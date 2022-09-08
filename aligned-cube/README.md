@@ -16,6 +16,28 @@ the CSVW tableSchema is the same `@id` as the cubes DSD, and annotated
 accordingly; whilst `csvw:Columns` are also
 `qb:ComponentSpecification`s.
 
+## Prototype CSVWUI with Rejigged data
+
+NOTE: This prototype is relatively realistic in how it works; but does
+have some small bugs and there is a small amount of smoke and mirrors
+going on.
+
+So don't worry too much about all the details in the prototype being
+correct.
+
+The main point is that it could all work properly! :-)
+
+In particular here is a URL to the aligned dataset dereferencing:
+
+https://deref.netlify.app/data/life-expectancy
+
+and here is an observation within that dataset dereferencing too:
+
+http://deref.netlify.app/data/life-expectancy/observations/W06000015/2005-01-01T00%3A00%3A00%2FP3Y/Female
+
+The observant will note that the metadata in the prototype sets a base
+elsewhere and the URI's are slightly different.
+
 ## Explanation of Ross's original example
 
 Ross's example sets the `@id` of the metadata document to be on the
@@ -154,25 +176,3 @@ There are also questions over how much information we should expect to
 provide in the CSVW document, and how much we can either infer (or
 expect others to infer). I leave all of these good questions open for
 now; they're decisions and trade offs for another day.
-
-# Prototype CSVWUI with Rejigged data
-
-NOTE: This prototype is relatively realistic in how it works; but does
-have some small bugs and there is a small amount of smoke and mirrors
-going on.
-
-So don't worry too much about all the details in the prototype being
-correct.
-
-The main point is that it could all work properly! :-)
-
-In particular here is a URL to the aligned dataset dereferencing:
-
-https://deref.netlify.app/data/life-expectancy
-
-and here is an observation within that dataset dereferencing too:
-
-http://deref.netlify.app/data/life-expectancy/observations/W06000015/2005-01-01T00%3A00%3A00%2FP3Y/Female
-
-The observant will note that the metadata in the prototype sets a base
-elsewhere and the URI's are slightly different.
