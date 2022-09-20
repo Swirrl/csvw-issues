@@ -1,0 +1,13 @@
+{
+ "@id": "./doc/schema.json",
+ "@context": ["http://www.w3.org/ns/csvw", {"@language": "en",
+                                            "@base": "http://data.gov.uk/crimes"
+                                            }]
+    "columns": [{"name":"a"},
+                {"name":"b"},
+                {"name":"c"},
+                {"name":"d"}
+
+             ]
+
+ }

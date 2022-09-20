@@ -1,0 +1,8 @@
+{ "@context": ["http://www.w3.org/ns/csvw", {"@language": "en",
+                                             "@base": "http://data.gov.uk/crimes"
+                                            }],
+  "@id": "",
+  "url": "./doc/2021-slice.csv",
+  "tableSchema" "./doc/schema.json",
+  "dct:isPartOf": {"@id": ""}
+}
