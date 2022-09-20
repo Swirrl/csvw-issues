@@ -3,5 +3,6 @@
                                             }],
   "@id": "",
   "url": "./doc/2022-slice.csv",
+  "tableSchema" "./doc/schema.json",
   "dct:isPartOf": {"@id": ""}
 }
