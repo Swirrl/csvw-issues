@@ -10,4 +10,4 @@ layout of data and how things might work. It also shows how such a
 dataset may be append only and logically built from immutable parts.
 
 The separate parts of the dataset and its representation all exist in
-the [/doc](/doc) directory.
+the [./doc](./doc) directory.
