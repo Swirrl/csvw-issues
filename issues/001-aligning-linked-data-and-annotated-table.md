@@ -428,3 +428,9 @@ discussed, and would hugely assist in not only aligning
 representations; but would also help leverage the tabular structure of
 the CSV to solve important other problems; most notably performance
 issues in tabular processing.
+
+# A second solution
+
+Define an extended subset of CSVW table schemas in JSON-LD that has the 
+alignment semantics we want, and use that to generate a CSVW that aligns
+the various table representations with our linked data URI's.
