@@ -33,7 +33,11 @@ is something more like in the diagram below:
 
 Here the layers aren't aligned (in terms of their identifiers and
 representations) and don't build on each other to form a single
-aligned stack.
+aligned stack. Developers wishing to progressively unlock layers of
+metadata are forced to switch stacks. Similarly developers working at
+one layer can't as easily collobarate with developers working at a
+different layer of interpretation; because the layers are incompatible
+in terms of their representations and required interpretations.
 
 The situation is actually worse and more subtle than this, for a more
 detailed description read on...
@@ -453,6 +457,6 @@ issues in tabular processing.
 
 # A second solution
 
-Define an extended subset of CSVW table schemas in JSON-LD that has the 
+Define an extended subset of CSVW table schemas in JSON-LD that has the
 alignment semantics we want, and use that to generate a CSVW that aligns
 the various table representations with our linked data URI's.
