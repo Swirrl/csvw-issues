@@ -16,6 +16,28 @@ result in a proliferation of incomplete and inadequate representations
 of "the data", rather than the augmented common representation users
 expect.
 
+To put it simply what we'd like is a layered metadata model where
+whichever layer of interpretation you are working in, all your
+identifiers are compatible and work together. Such a model allows
+users to progress within the same stack, unlocking additional features
+without having to change stacks or technologies along the way. Every
+layer adds new capabilities, but does not require reworking previous
+capabilities. An aligned model would like something like this:
+
+![Input Table](../assets/AlignedTables.jpg)
+
+However we argue here that by default what you naturally get with CSVW
+is something more like in the diagram below:
+
+![Input Table](../assets/UnAlignedTables.jpg)
+
+Here the layers aren't aligned (in terms of their identifiers and
+representations) and don't build on each other to form a single
+aligned stack.
+
+The situation is actually worse and more subtle than this, for a more
+detailed description read on...
+
 This issue is related also to [issue #2: CSVW's weird evaluation
 semantics](./002-template-evaluation.md).
 
