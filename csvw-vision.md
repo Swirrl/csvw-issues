@@ -122,3 +122,9 @@ It's also worth noting that typically for statistical data cubes we
 would not expect Tidy data (essentially 3rd normal form) to have
 multiple subjects, as that would typically imply a level of
 denormalisation.
+
+# A prototype
+
+A prototype showing some of these ideas and others is available at:
+
+https://platform-prototype.vercel.app/
