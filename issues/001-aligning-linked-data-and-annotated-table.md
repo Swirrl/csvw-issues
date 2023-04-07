@@ -1,4 +1,4 @@
-# The problems aligning linked data and CSVW
+# The CSVW Alignment Problem
 
 Our proposed interfaces aim to use [the annotated table
 model](../notes/001-what-is-the-annotated-table-model.md) as the most
